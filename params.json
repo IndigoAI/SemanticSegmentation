@@ -1,0 +1,39 @@
+{
+    "MODEL": {
+        "EXTRA": {
+            "STAGE1": {
+                "NUM_MODULES": 1,
+                "NUM_CHANNELS": [64],
+                "BLOCK": "BOTTLENECK",
+                "NUM_BLOCKS": [4],
+                "NUM_BRANCHES": 1,
+                "FUSE_METHOD": "SUM"
+            },
+            "STAGE2": {                
+                "NUM_MODULES": 1,
+                "NUM_CHANNELS": [48, 96],
+                "BLOCK": "BASIC",
+                "NUM_BLOCKS": [4, 4],
+                "NUM_BRANCHES": 2,
+                "FUSE_METHOD": "SUM"
+            },         
+            "STAGE3": {
+                "NUM_MODULES": 4,
+                "NUM_CHANNELS": [48, 96, 192],
+                "BLOCK": "BASIC",
+                "NUM_BLOCKS": [4, 4, 4],
+                "NUM_BRANCHES": 3,
+                "FUSE_METHOD": "SUM"
+            },
+            "STAGE4": {
+                "NUM_MODULES": 3,
+                "NUM_CHANNELS": [48, 96, 192, 384],
+                "BLOCK": "BASIC",
+                "NUM_BLOCKS": [4, 4, 4, 4],
+                "NUM_BRANCHES": 4,
+                "FUSE_METHOD": "SUM"
+            }
+        },
+        "PRETRAINED": "hrnet_w18_small_model_v1.pth"
+    }
+}
