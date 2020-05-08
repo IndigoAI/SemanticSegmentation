@@ -16,10 +16,10 @@ if __name__ == '__main__':
     transform = transforms.Compose([transforms.Resize((800, 544)), transforms.ToTensor()])
 
     folder = 'data'
-    output_folder = folder + '/annotations/pixel-level/'
-    input_folder = folder + '/photos/'
+    output_folder = f'{folder}/annotations/pixel-level/'
+    input_folder = f'{folder}/photos/'
 
-    label_list = scipy.io.loadmat(folder + '/' + 'label_list.mat')
+    label_list = scipy.io.loadmat(f'{folder}/label_list.mat')
 
     inputs = [transform(Image.open(x)).unsqueeze(0) for x in sorted(glob.glob(f'{input_folder}*.jpg'))[:2]] # 1004
     labels = [scipy.io.loadmat(x)['groundtruth'] for x in sorted(glob.glob(f'{output_folder}*.mat'))[:2]]
