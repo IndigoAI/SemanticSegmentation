@@ -10,3 +10,4 @@
 ## Implementations: 
 * [HRNet-Image-Classification](https://github.com/HRNet/HRNet-Image-Classification) (original HRNet)
 * [HRNet-Semantic-Segmentation](https://github.com/HRNet/HRNet-Semantic-Segmentation/tree/HRNet-OCR)
+* [Endcoder-Decoder](https://github.com/CSAILVision/semantic-segmentation-pytorch)
