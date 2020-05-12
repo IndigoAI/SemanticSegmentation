@@ -46,6 +46,8 @@ class BasicBlock(nn.Module):
     def forward(self, x):
         residual = x
 
+        aa = 3
+        b = aa
         out = self.conv1(x)
         out = self.bn1(out)
         out = self.relu(out)
@@ -450,7 +452,6 @@ class HighResolutionNet(nn.Module):
         x = self.layer1(x)
 
 
-
         x_list = []
         for i in range(self.stage2_cfg['NUM_BRANCHES']):
             if self.transition1[i] is not None:
@@ -458,7 +459,6 @@ class HighResolutionNet(nn.Module):
             else:
                 x_list.append(x)
         y_list = self.stage2(x_list)
-
 
         x_list = []
         for i in range(self.stage3_cfg['NUM_BRANCHES']):
