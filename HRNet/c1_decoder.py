@@ -19,7 +19,7 @@ def conv3x3_bn_relu(in_planes, out_planes, stride=1):
             )
 
 class C1(nn.Module):
-    def __init__(self, num_class=150, fc_dim=2048, use_softmax=True):
+    def __init__(self, num_class=150, fc_dim=2048, use_softmax=False):
         super(C1, self).__init__()
         self.use_softmax = use_softmax
 
