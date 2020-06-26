@@ -7,7 +7,7 @@ import logging
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from HRNet.batchnorm import SynchronizedBatchNorm2d
+from OCRForClothes.HRNet.batchnorm import SynchronizedBatchNorm2d
 
 BatchNorm2d = SynchronizedBatchNorm2d
 BN_MOMENTUM = 0.1
@@ -428,7 +428,8 @@ class HRNetV2(nn.Module):
             x[3], size=(x0_h, x0_w), mode='bilinear', align_corners=False)
 
         x = torch.cat([x[0], x1, x2, x3], 1)
-
+        print(x.shape)
+        1/0
         # x = self.last_layer(x)
         return [x]
 

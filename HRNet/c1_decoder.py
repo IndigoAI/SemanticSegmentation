@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch._utils
-from HRNet.batchnorm import SynchronizedBatchNorm2d
+from OCRForClothes.HRNet.batchnorm import SynchronizedBatchNorm2d
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -28,10 +28,13 @@ class C1(nn.Module):
         # last conv
         self.conv_last = nn.Conv2d(fc_dim // 4, num_class, 1, 1, 0)
 
-    def forward(self, conv_out, segSize=None):
+    def forward(self, conv_out, ocr=False, segSize=None):
         conv5 = conv_out[-1]
         x = self.cbr(conv5)
-        x = self.conv_last(x)
+        x = self.conv_last(x) 
+
+        if ocr:
+            return x # probs
 
         if self.use_softmax:  # is True during inference
             x = nn.functional.interpolate(
@@ -62,8 +65,44 @@ class C1(nn.Module):
             model_dict.update(pretrained_dict)
             self.load_state_dict(model_dict)
 
+            
+# last conv, deep supervision
+class C1DeepSup(nn.Module):
+    def __init__(self, num_class=150, fc_dim=2048, use_softmax=False):
+        super(C1DeepSup, self).__init__()
+        self.use_softmax = use_softmax
 
-def get_decoder(n_class, path):
-    model = C1(num_class=n_class, fc_dim=720)
+        self.cbr = conv3x3_bn_relu(fc_dim, fc_dim // 4, 1)
+        self.cbr_deepsup = conv3x3_bn_relu(fc_dim // 2, fc_dim // 4, 1)
+
+        # last conv
+        self.conv_last = nn.Conv2d(fc_dim // 4, num_class, 1, 1, 0)
+        self.conv_last_deepsup = nn.Conv2d(fc_dim // 4, num_class, 1, 1, 0)
+
+    def forward(self, conv_out, segSize=None):
+        conv5 = conv_out[-1]
+
+        x = self.cbr(conv5)
+        x = self.conv_last(x)
+
+        if self.use_softmax:  # is True during inference
+            x = nn.functional.interpolate(
+                x, size=segSize, mode='bilinear', align_corners=False)
+            x = nn.functional.softmax(x, dim=1)
+            return x
+
+        # deep sup
+        conv4 = conv_out[-2]
+        _ = self.cbr_deepsup(conv4)
+        _ = self.conv_last_deepsup(_)
+
+        x = nn.functional.log_softmax(x, dim=1)
+        _ = nn.functional.log_softmax(_, dim=1)
+
+        return x
+
+
+def get_decoder(n_class, fc_dim=720, path=''):
+    model = C1(num_class=n_class, fc_dim=fc_dim)
     model.init_weights(path)
     return model
